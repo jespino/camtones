@@ -1,0 +1,120 @@
+= CamToNES
+Jesús Espino, <jespinog@gmail.com>
+v0.0.1
+:toc: left
+:!numbered:
+:idseparator: -
+:idprefix:
+:source-highlighter: pygments
+:pygments-style: friendly
+:sectlinks:
+
+
+== Introduction
+
+_CamToNES_ (Camera To Not-Empty Sequence) is command line interface for process
+security camera videos for process motion and faces.
+
+=== Rationale
+
+I start writting this program because I need to review hours of security camera
+videos and that's sounds really boring and time consuming. The main objetive is
+to easy the task of reviewing static camera videos applying motion detection
+through Background substracion
+
+Here a incomplete list of things that _CamToNES_ aims to archieve:
+
+* Have a simple interface to use OpenCV in for extract motion and faces from videos.
+* Provide a simple way to tune the parameters for correctly detect relevant motion.
+* Provide a simple way to realtime detection of movement and faces.
+
+And _CamToNES_ goals are not:
+
+* To be a fully feature interface to OpenCV.
+* To provide an exaustive set of tune parameters.
+
+=== Project Maturity
+
+Since _CamToNES_ is a young project there can be some API breakage.
+
+
+=== Dependencies
+
+_CamToNES_ depends on OpenCV 3.0 and python >= 3.4.
+
+=== Install
+
+To use _CamToNES_ you can install it through pypi:
+
+[source,bash]
+----
+pip install camtones
+----
+
+[[quickstart]]
+== Quick Start
+
+This section intends to explain how to get _catacumba_ up and running.
+
+=== Motion detection
+
+== Concepts
+
+
+== Developers Guide
+
+=== Philosophy
+
+Five most important rules:
+
+- Beautiful is better than ugly.
+- Explicit is better than implicit.
+- Simple is better than complex.
+- Complex is better than complicated.
+- Readability counts.
+
+All contributions to _CamToNES_ should keep these important rules in mind.
+
+=== Source Code
+
+_CamToNES_ is open source and can be found on
+link:https://github.com/jespino/catacumba[github].
+
+You can clone the public repository with this command:
+
+[source,text]
+----
+git clone https://github.com/jespino/catacumba
+----
+
+
+=== License
+
+_CamToNES_ is licensed under BSD (2-Clause) license:
+
+----
+Copyright (c) 2015 Jesús Espino <jespinog@gmail.com>
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+----
