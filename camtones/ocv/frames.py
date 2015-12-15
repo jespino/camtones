@@ -3,6 +3,8 @@ import time
 import copy
 import imutils
 
+from .contours import Contour
+
 
 class Frame:
     def __init__(self, frame):
@@ -50,3 +52,31 @@ class Frame:
 
     def clone(self):
         return copy.deepcopy(self)
+
+    def get_contours(self):
+        contours = []
+        (cnts, _) = cv2.findContours(self.frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
+        for c in cnts:
+            contours.append(Contour(c))
+        return contours
+
+    def blur(self, quantity):
+        self.frame = cv2.blur(self.frame, (quantity, quantity))
+
+    def threshold(self, minimun):
+        self.frame = cv2.threshold(self.frame, minimun, 255, cv2.THRESH_BINARY)[1]
+
+    def gray(self):
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+
+    def gray_copy(self):
+        return Frame(cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY))
+
+    def crop(self, point1, point2):
+        self.frame = self.frame[point1[1]:point2[1], point1[0]:point2[0]]
+
+    def crop_copy(self, point1, point2):
+        return Frame(self.frame[point1[1]:point2[1], point1[0]:point2[0]])
+
+    def write(self, filename):
+        cv2.imwrite(filename, self.frame)

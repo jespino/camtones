@@ -1,25 +1,17 @@
-import cv2
 import time
 
-from camtones.contours import Contour
-from camtones.frames import Frame
-from camtones.windows import CamtonesWindow
+from camtones.ocv import api as ocv
 
 
 class MotionBaseProcess:
     def __init__(self, video, debug):
-        self.video = video
         self.debug = debug
 
-        try:
-            self.camera = cv2.VideoCapture(int(self.video))
-        except ValueError:
-            self.camera = cv2.VideoCapture(self.video)
-
-        self.fgbg = cv2.createBackgroundSubtractorMOG2()
+        self.camera = ocv.get_camera(video)
+        self.fgbg = ocv.get_background_extractor("MOG2")
 
         if self.debug:
-            self.fgmask_window = CamtonesWindow("FGMASK")
+            self.fgmask_window = ocv.get_window("FGMASK")
 
     def exclude_frame(self, contour, frame):
         data = {
@@ -34,25 +26,20 @@ class MotionBaseProcess:
             if not self.process_frame():
                 break
 
-    def get_contours(self, mask):
-        (cnts, _) = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
-        return cnts
-
     def is_moving(self, frame, with_contours=True):
-        fgmask = self.fgbg.apply(frame.frame)
+        fgmask = self.fgbg.apply(frame)
         if self.blur:
-            fgmask = cv2.blur(fgmask, (self.blur, self.blur))
-        fgmask = cv2.threshold(fgmask, 128, 255, cv2.THRESH_BINARY)[1]
+            fgmask.blur(self.blur)
+        fgmask.threshold(128)
 
         if self.debug:
-            self.fgmask_window.show(Frame(fgmask))
+            self.fgmask_window.show(fgmask)
 
-        cnts = self.get_contours(fgmask)
+        cnts = fgmask.get_contours()
 
         moving = False
         included_cnts = []
-        for c in cnts:
-            contour = Contour(c)
+        for contour in cnts:
             if self.exclude_frame(contour, frame):
                 continue
 
@@ -72,18 +59,13 @@ class MotionDetectProcess(MotionBaseProcess):
         self.resize = resize
         self.blur = blur
 
-        self.window = CamtonesWindow("Motion extract")
-
-    def __del__(self):
-        self.camera.release()
+        self.window = ocv.get_window("Motion extract")
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
 
         if not grabbed:
             return False
-
-        frame = Frame(frame)
 
         if self.resize:
             frame = frame.resize(width=self.resize)
@@ -112,27 +94,15 @@ class MotionExtractProcess(MotionBaseProcess):
         self.show_time = show_time
         self.progress = progress
 
-        fps = self.camera.get(cv2.CAP_PROP_FPS)
-        size = (int(self.camera.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                int(self.camera.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        self.output = cv2.VideoWriter(output, fourcc, fps, size)
+        self.output = ocv.get_video_writer(self.camera, output)
 
-        self.total_frames = self.camera.get(cv2.CAP_PROP_FRAME_COUNT)
         self.last_percentage = 0
-
-    def __del__(self):
-        self.camera.release()
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
-        current_msec_pos = self.camera.get(cv2.CAP_PROP_POS_MSEC)
-        current_frame = self.camera.get(cv2.CAP_PROP_POS_FRAMES)
 
         if not grabbed:
             return False
-
-        frame = Frame(frame)
 
         if self.resize:
             miniframe = frame.resize(width=self.resize)
@@ -143,13 +113,13 @@ class MotionExtractProcess(MotionBaseProcess):
 
         if moving:
             if self.show_time:
-                current_time = time.gmtime(int(current_msec_pos/1000))
+                current_time = time.gmtime(int(self.camera.current_pos/1000))
                 frame.draw_timer(current_time)
 
             self.output.write(frame.frame)
 
         if self.progress:
-            percentage = (current_frame * 100) / self.total_frames
+            percentage = (self.camera.current_frame * 100) / self.camera.frames
             if int(self.last_percentage) != int(percentage):
                 print("{}%".format(int(percentage)))
                 self.last_percentage = percentage
@@ -168,8 +138,6 @@ class MotionExtractEDLProcess(MotionBaseProcess):
 
         self.output = open(output, "w")
         self.start_silence = 0
-
-        self.total_frames = self.camera.get(cv2.CAP_PROP_FRAME_COUNT)
         self.last_percentage = 0
 
     def __del__(self):
@@ -177,13 +145,9 @@ class MotionExtractEDLProcess(MotionBaseProcess):
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
-        current_msec_pos = self.camera.get(cv2.CAP_PROP_POS_MSEC)
-        current_frame = self.camera.get(cv2.CAP_PROP_POS_FRAMES)
 
         if not grabbed:
             return False
-
-        frame = Frame(frame)
 
         if self.resize:
             miniframe = frame.resize(width=self.resize)
@@ -193,15 +157,15 @@ class MotionExtractEDLProcess(MotionBaseProcess):
         (moving, _) = self.is_moving(miniframe, with_contours=False)
 
         if not moving and self.start_silence is None:
-            self.start_silence = current_msec_pos/1000
+            self.start_silence = self.camera.current_pos/1000
 
         if moving and self.start_silence is not None:
-            end_silence = current_msec_pos/1000
+            end_silence = self.camera.current_pos/1000
             self.output.write("{} {} {}\n".format(self.start_silence, end_silence, 0))
             self.start_silence = None
 
         if self.progress:
-            percentage = (current_frame * 100) / self.total_frames
+            percentage = (self.camera.current_frame * 100) / self.camera.frames
             if int(self.last_percentage) != int(percentage):
                 print("{}%".format(int(percentage)))
                 self.last_percentage = percentage

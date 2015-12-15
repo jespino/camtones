@@ -1,45 +1,22 @@
-import cv2
-
-from camtones.windows import CamtonesWindow
-from camtones.frames import Frame
-
+from camtones.ocv import api as ocv
 
 class FaceBaseProcess:
     def __init__(self, video, debug, classifier):
-        self.video = video
         self.debug = debug
-        self.classifier = classifier
-        try:
-            self.camera = cv2.VideoCapture(int(self.video))
-        except ValueError:
-            self.camera = cv2.VideoCapture(self.video)
-        self.faceCascade = cv2.CascadeClassifier(self.classifier)
+
+        self.camera = ocv.get_camera(video)
+        self.faceCascade = ocv.get_face_extractor(classifier)
 
     def run(self):
         while True:
             if not self.process_frame():
                 break
 
-    def __del__(self):
-        self.camera.release()
-
-    def get_faces(self, frame):
-        gray = cv2.cvtColor(frame.frame, cv2.COLOR_BGR2GRAY)
-
-        faces = self.faceCascade.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(30, 30),
-            # flags = cv2.HAAR_SCALE_IMAGE
-        )
-
-        return faces
 
 class FaceDetectProcess(FaceBaseProcess):
     def __init__(self, video, debug, classifier):
         super().__init__(video, debug, classifier)
-        self.window = CamtonesWindow("Face detect")
+        self.window = ocv.get_window("Face detect")
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
@@ -47,9 +24,7 @@ class FaceDetectProcess(FaceBaseProcess):
         if not grabbed:
             return False
 
-        frame = Frame(frame)
-
-        faces = self.get_faces(frame)
+        faces = self.faceCascade.get_faces(frame)
 
         for (x, y, w, h) in faces:
             frame.draw_rect((x, y), (x + w, y + h), (0, 255, 0))
@@ -69,16 +44,13 @@ class FaceExtractProcess(FaceBaseProcess):
         if not grabbed:
             return False
 
-        frame = Frame(frame)
-
-        faces = self.get_faces(frame)
-
-        milisecond = self.camera.get(cv2.CAP_PROP_POS_MSEC)
+        faces = self.faceCascade.get_faces(frame)
 
         counter = 0
         for (x, y, w, h) in faces:
             counter += 1
-            croped = frame.frame[y:y + h, x:x + w]
-            cv2.imwrite("{}/{}-{}.png".format(self.output, milisecond, counter), croped)
+            croped = frame.crop_copy((x, y), (x + w, y + h))
+            filename = "{}/{}-{}.png".format(self.output, self.camera.current_pos, counter)
+            ocv.write_frame(filename)
 
         return True
