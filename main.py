@@ -4,11 +4,13 @@ import camtones
 from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess, MotionExtractEDLProcess
 from camtones.procs.face import FaceDetectProcess, FaceExtractProcess
 
+
 def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     click.echo("Version {}.{}.{}".format(*camtones.__version__))
     ctx.exit()
+
 
 @click.group()
 @click.option("--debug", is_flag=True, default=False, help="debug enabled")
@@ -18,7 +20,7 @@ def cli(ctx, debug, version):
     ctx.obj['DEBUG'] = debug
 
 
-@click.command()
+@cli.command()
 @click.argument("video-or-device")
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--resize", type=int, help="print progress")
@@ -28,7 +30,7 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur):
     MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur).run()
 
 
-@click.command()
+@cli.command()
 @click.argument("video-or-device")
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
@@ -40,7 +42,8 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur):
 def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, show_time):
     MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time).run()
 
-@click.command()
+
+@cli.command()
 @click.argument("video-or-device")
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
@@ -52,7 +55,7 @@ def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, res
     MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur).run()
 
 
-@click.command()
+@cli.command()
 @click.argument("video-or-device")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
 @click.pass_context
@@ -60,7 +63,7 @@ def face_detect(ctx, video_or_device, classifier):
     FaceDetectProcess(video_or_device, ctx.obj['DEBUG'], classifier).run()
 
 
-@click.command()
+@cli.command()
 @click.argument("video-or-device")
 @click.argument("output-directory")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
@@ -70,9 +73,4 @@ def face_extract(ctx, video_or_device, output_directory, classifier):
 
 
 if __name__ == '__main__':
-    cli.add_command(motion_detect)
-    cli.add_command(motion_extract)
-    cli.add_command(motion_extract_edl)
-    cli.add_command(face_extract)
-    cli.add_command(face_detect)
     cli(obj={})
