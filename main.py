@@ -1,7 +1,7 @@
 import click
 import camtones
 
-from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess
+from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess, MotionExtractEDLProcess
 from camtones.procs.face import FaceDetectProcess, FaceExtractProcess
 
 def print_version(ctx, param, value):
@@ -40,6 +40,17 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur):
 def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, show_time):
     MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time).run()
 
+@click.command()
+@click.argument("video-or-device")
+@click.argument("output-file")
+@click.option("--exclude", help="python expression to exclude results")
+@click.option("--progress", is_flag=True, help="print progress")
+@click.option("--resize", type=int, help="print progress")
+@click.option("--blur", type=int, help="print progress")
+@click.pass_context
+def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, resize, blur):
+    MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur).run()
+
 
 @click.command()
 @click.argument("video-or-device")
@@ -61,6 +72,7 @@ def face_extract(ctx, video_or_device, output_directory, classifier):
 if __name__ == '__main__':
     cli.add_command(motion_detect)
     cli.add_command(motion_extract)
+    cli.add_command(motion_extract_edl)
     cli.add_command(face_extract)
     cli.add_command(face_detect)
     cli(obj={})

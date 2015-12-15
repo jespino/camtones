@@ -157,3 +157,77 @@ class MotionExtractProcess(MotionBaseProcess):
                 self.last_percentage = percentage
 
         return True
+
+
+class MotionExtractEDLProcess(MotionBaseProcess):
+    def __init__(self, video, debug, exclude, output, progress, resize, blur):
+        self.video = video
+        self.exclude = exclude
+        self.resize = resize
+        self.blur = blur
+        self.output = output
+        self.progress = progress
+        self.debug = debug
+
+        try:
+            self.camera = cv2.VideoCapture(int(self.video))
+        except ValueError:
+            self.camera = cv2.VideoCapture(self.video)
+
+        self.fgbg = cv2.createBackgroundSubtractorMOG2()
+        self.window = CamtonesWindow("Motion extract")
+
+        self.output = open(output, "w")
+        self.start_silence = 0
+
+        self.total_frames = self.camera.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.last_percentage = 0
+
+    def __del__(self):
+        self.camera.release()
+
+    def process_frame(self):
+        (grabbed, frame) = self.camera.read()
+        current_msec_pos = self.camera.get(cv2.CAP_PROP_POS_MSEC)
+        current_frame = self.camera.get(cv2.CAP_PROP_POS_FRAMES)
+
+        if not grabbed:
+            return False
+
+        frame = Frame(frame)
+
+        if self.resize:
+            miniframe = frame.resize(width=self.resize)
+        else:
+            miniframe = frame
+
+        fgmask = self.fgbg.apply(miniframe.frame)
+        if self.blur:
+            fgmask = cv2.blur(fgmask, (self.blur, self.blur))
+        fgmask = cv2.threshold(fgmask, 128, 255, cv2.THRESH_BINARY)[1]
+
+        cnts = self.get_contours(fgmask)
+
+        moving = False
+        for c in cnts:
+            contour = Contour(c)
+            if self.exclude_frame(contour, frame):
+                continue
+
+            moving = True
+
+        if not moving and self.start_silence is None:
+            self.start_silence = current_msec_pos/1000
+
+        if moving and self.start_silence is not None:
+            end_silence = current_msec_pos/1000
+            self.output.write("{} {} {}\n".format(self.start_silence, end_silence, 0))
+            self.start_silence = None
+
+        if self.progress:
+            percentage = (current_frame * 100) / self.total_frames
+            if int(self.last_percentage) != int(percentage):
+                print("{}%".format(int(percentage)))
+                self.last_percentage = percentage
+
+        return True
