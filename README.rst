@@ -4,40 +4,15 @@ CamToNes
 CamToNes (Camera To Not Empty Sequece) is a small script to process security
 camera video (recorded or streams) to easy extract motion and faces.
 
-Features
-========
+Documentation
+-------------
 
-Motion detection
-----------------
+You can find the full documentation of the project
+[here](http://jespino.github.io/camtones/latest/).
 
-You can detect motion on the video, and show it green boxed.
-
-Motion extraction
------------------
-
-You can extract to another video file all frame with motion on it.
-
-Face detection
---------------
-
-You can detect faces on the video, and show it green boxed.
-
-Face extraction
----------------
-
-You can detect faces on the video, and write it as images in a directory.
-
-Example session
-===============
-
-TODO
-
-Calibration
+Screenshots
 -----------
 
-TODO
+![Motion detection](https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/motion-detection.gif "Motion detection")
 
-Extraction
-----------
-
-TODO
+![Face detection](https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/face-detection.gif "Face detection")
