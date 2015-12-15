@@ -5,6 +5,16 @@ from camtones.frames import Frame
 
 
 class FaceBaseProcess:
+    def __init__(self, video, debug, classifier):
+        self.video = video
+        self.debug = debug
+        self.classifier = classifier
+        try:
+            self.camera = cv2.VideoCapture(int(self.video))
+        except ValueError:
+            self.camera = cv2.VideoCapture(self.video)
+        self.faceCascade = cv2.CascadeClassifier(self.classifier)
+
     def run(self):
         while True:
             if not self.process_frame():
@@ -28,14 +38,7 @@ class FaceBaseProcess:
 
 class FaceDetectProcess(FaceBaseProcess):
     def __init__(self, video, debug, classifier):
-        self.video = video
-        self.classifier = classifier
-        self.debug = debug
-        try:
-            self.camera = cv2.VideoCapture(int(self.video))
-        except ValueError:
-            self.camera = cv2.VideoCapture(self.video)
-        self.faceCascade = cv2.CascadeClassifier(self.classifier)
+        super().__init__(video, debug, classifier)
         self.window = CamtonesWindow("Face detect")
 
     def process_frame(self):
@@ -57,16 +60,8 @@ class FaceDetectProcess(FaceBaseProcess):
 
 class FaceExtractProcess(FaceBaseProcess):
     def __init__(self, video, debug, output, classifier):
-        self.video = video
-        self.classifier = classifier
+        super().__init__(video, debug, classifier)
         self.output = output
-        self.debug = debug
-        try:
-            self.camera = cv2.VideoCapture(int(self.video))
-        except ValueError:
-            self.camera = cv2.VideoCapture(self.video)
-        self.faceCascade = cv2.CascadeClassifier(self.classifier)
-        self.window = CamtonesWindow("Face detect")
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
