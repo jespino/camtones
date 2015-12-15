@@ -38,7 +38,7 @@ class Window:
             if self.is_fullscreen:
                 self.to_normal()
             else:
-                self.tofullscreen()
+                self.to_fullscreen()
         elif key == 81:  # left
             camera.seek(max(camera.current_frame - 100, 0))
         elif key == 82:  # up
