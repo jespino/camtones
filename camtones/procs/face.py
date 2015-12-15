@@ -1,6 +1,6 @@
 from camtones.ocv import api as ocv
 
-class FaceBaseProcess:
+class FaceBaseProcess(object):
     def __init__(self, video, debug, classifier):
         self.debug = debug
 
@@ -15,7 +15,7 @@ class FaceBaseProcess:
 
 class FaceDetectProcess(FaceBaseProcess):
     def __init__(self, video, debug, classifier):
-        super().__init__(video, debug, classifier)
+        super(FaceDetectProcess, self).__init__(video, debug, classifier)
         self.window = ocv.get_window("Face detect")
 
     def process_frame(self):
@@ -35,7 +35,7 @@ class FaceDetectProcess(FaceBaseProcess):
 
 class FaceExtractProcess(FaceBaseProcess):
     def __init__(self, video, debug, output, classifier):
-        super().__init__(video, debug, classifier)
+        super(FaceExtractProcess, self).__init__(video, debug, classifier)
         self.output = output
 
     def process_frame(self):

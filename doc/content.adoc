@@ -40,7 +40,7 @@ Since _CamToNES_ is a young project there can be some API breakage.
 
 === Dependencies
 
-_CamToNES_ depends on OpenCV 3.0 and python >= 3.4.
+_CamToNES_ depends on OpenCV 3.0 and python >= 2.7.
 
 === Install
 

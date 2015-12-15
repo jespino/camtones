@@ -3,7 +3,7 @@ import time
 from camtones.ocv import api as ocv
 
 
-class MotionBaseProcess:
+class MotionBaseProcess(object):
     def __init__(self, video, debug):
         self.debug = debug
 
@@ -54,7 +54,7 @@ class MotionBaseProcess:
 
 class MotionDetectProcess(MotionBaseProcess):
     def __init__(self, video, debug, exclude, resize, blur):
-        super().__init__(video, debug)
+        super(MotionDetectProcess, self).__init__(video, debug)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
@@ -86,7 +86,7 @@ class MotionDetectProcess(MotionBaseProcess):
 
 class MotionExtractProcess(MotionBaseProcess):
     def __init__(self, video, debug, exclude, output, progress, resize, blur, show_time):
-        super().__init__(video, debug)
+        super(MotionExtractProcess, self).__init__(video, debug)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
@@ -129,7 +129,7 @@ class MotionExtractProcess(MotionBaseProcess):
 
 class MotionExtractEDLProcess(MotionBaseProcess):
     def __init__(self, video, debug, exclude, output, progress, resize, blur):
-        super().__init__(video, debug)
+        super(MotionExtractProcess, self).__init__(video, debug)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
