@@ -3,6 +3,7 @@ import camtones
 
 from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess, MotionExtractEDLProcess
 from camtones.procs.face import FaceDetectProcess, FaceExtractProcess
+from camtones.ocv import api as ocv
 
 
 def print_version(ctx, param, value):
@@ -25,9 +26,15 @@ def cli(ctx, debug, version):
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--resize", type=int, help="print progress")
 @click.option("--blur", type=int, help="print progress")
+@click.option(
+    "--subtractor",
+    type=click.Choice(ocv.get_supported_subtractors().keys()),
+    default="MOG2" if "MOG2" in ocv.get_supported_subtractors() else "KNN",
+    help="select background subtractor"
+)
 @click.pass_context
-def motion_detect(ctx, video_or_device, exclude, resize, blur):
-    MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur).run()
+def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
+    MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur, subtractor).run()
 
 
 @cli.command()
@@ -38,9 +45,15 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur):
 @click.option("--resize", type=int, help="print progress")
 @click.option("--blur", type=int, help="print progress")
 @click.option("--show-time", is_flag=True, help="show the current time")
+@click.option(
+    "--subtractor",
+    type=click.Choice(ocv.get_supported_subtractors().keys()),
+    default="MOG2" if "MOG2" in ocv.get_supported_subtractors() else "KNN",
+    help="select background subtractor"
+)
 @click.pass_context
-def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, show_time):
-    MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time).run()
+def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, show_time, subtractor):
+    MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time, subtractor).run()
 
 
 @cli.command()

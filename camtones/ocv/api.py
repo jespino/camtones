@@ -29,3 +29,17 @@ def get_video_writer(camera, filename):
 
 def get_window(name):
     return Window(name)
+
+
+def get_supported_substractors():
+    supported_substractors = {}
+    if hasattr(cv2, "createBackgroundSubtractorGMG"):
+        supported_substractors["GMG"] = cv2.createBackgroundSubtractorGMG
+    if hasattr(cv2, "createBackgroundSubtractorKNN"):
+        supported_substractors["KNN"] = cv2.createBackgroundSubtractorKNN
+    if hasattr(cv2, "createBackgroundSubtractorMOG"):
+        supported_substractors["MOG"] = cv2.createBackgroundSubtractorMOG
+    if hasattr(cv2, "createBackgroundSubtractorMOG2"):
+        supported_substractors["MOG2"] = cv2.createBackgroundSubtractorMOG2
+
+    return supported_substractors

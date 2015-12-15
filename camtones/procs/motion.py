@@ -4,11 +4,11 @@ from camtones.ocv import api as ocv
 
 
 class MotionBaseProcess(object):
-    def __init__(self, video, debug):
+    def __init__(self, video, debug, subtractor):
         self.debug = debug
 
         self.camera = ocv.get_camera(video)
-        self.fgbg = ocv.get_background_extractor("MOG2")
+        self.fgbg = ocv.get_background_extractor(subtractor)
 
         if self.debug:
             self.fgmask_window = ocv.get_window("FGMASK")
@@ -53,8 +53,8 @@ class MotionBaseProcess(object):
 
 
 class MotionDetectProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, resize, blur):
-        super(MotionDetectProcess, self).__init__(video, debug)
+    def __init__(self, video, debug, exclude, resize, blur, subtractor):
+        super(MotionDetectProcess, self).__init__(video, debug, subtractor)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
@@ -85,8 +85,8 @@ class MotionDetectProcess(MotionBaseProcess):
 
 
 class MotionExtractProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, output, progress, resize, blur, show_time):
-        super(MotionExtractProcess, self).__init__(video, debug)
+    def __init__(self, video, debug, exclude, output, progress, resize, blur, show_time, subtractor):
+        super(MotionExtractProcess, self).__init__(video, debug, subtractor)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
