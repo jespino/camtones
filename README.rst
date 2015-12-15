@@ -8,11 +8,19 @@ Documentation
 -------------
 
 You can find the full documentation of the project
-[here](http://jespino.github.io/camtones/latest/).
+`here <http://jespino.github.io/camtones/latest/>`_.
 
 Screenshots
 -----------
 
-![Motion detection](https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/motion-detection.gif "Motion detection")
+.. figure:: https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/motion-detection.gif
+   :scale: 50 %
+   :alt: Motion detection
 
-![Face detection](https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/face-detection.gif "Face detection")
+   Motion detection
+
+.. figure:: https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/face-detection.gif
+   :scale: 50 %
+   :alt: Face detection
+
+   Face detection
