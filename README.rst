@@ -13,13 +13,13 @@ You can find the full documentation of the project
 Screenshots
 -----------
 
-.. figure:: https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/motion-detection.gif
+.. figure:: https://jespino.github.io/camtones/latest/assets/motion-detection.gif
    :scale: 50 %
    :alt: Motion detection
 
    Motion detection
 
-.. figure:: https://raw.githubusercontent.com/jespino/camtones/master/doc/assets/face-detection.gif
+.. figure:: https://jespino.github.io/camtones/latest/assets/face-detection.gif
    :scale: 50 %
    :alt: Face detection
 
