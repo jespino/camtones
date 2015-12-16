@@ -1,6 +1,7 @@
-from camtones.ocv import api as ocv
-
+import os
 from progressbar import ProgressBar, Bar, ETA
+
+from camtones.ocv import api as ocv
 
 
 class FaceBaseProcess(object):
