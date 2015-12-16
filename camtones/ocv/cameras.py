@@ -15,6 +15,18 @@ class Camera:
         return self._camera.get(cv2.CAP_PROP_FRAME_COUNT)
 
     @property
+    def fps(self):
+        return self._camera.get(cv2.CAP_PROP_FPS)
+
+    @property
+    def frame_width(self):
+        return self._camera.get(cv2.CAP_PROP_FRAME_WIDTH)
+
+    @property
+    def frame_height(self):
+        return self._camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+    @property
     def current_pos(self):
         return self._camera.get(cv2.CAP_PROP_POS_MSEC)
 

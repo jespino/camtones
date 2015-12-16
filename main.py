@@ -1,7 +1,7 @@
 import click
 import camtones
 
-from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess, MotionExtractEDLProcess
+from camtones.procs.motion import MotionDetectProcess, MotionExtractProcess, MotionExtractEDLProcess, MotionCalibrate
 from camtones.procs.face import FaceDetectProcess, FaceExtractProcess
 from camtones.ocv import api as ocv
 
@@ -74,6 +74,12 @@ def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, res
     MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, subtractor).run()
 
 
+@cli.command(help="Calibrate and run motion detection")
+@click.argument("video")
+def motion_wizard(video):
+    MotionCalibrate(video).run()
+
+
 @cli.command(help="Show a video or camera device highlighting the detected faces")
 @click.argument("video-or-device")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
@@ -86,6 +92,7 @@ def face_detect(ctx, video_or_device, classifier):
 def classifiers():
     for classifier in ocv.get_stock_classifiers():
         click.echo(" - {}".format(classifier))
+
 
 @cli.command(help="Generate a set of images from a video or camera device with the detected faces")
 @click.argument("video-or-device")

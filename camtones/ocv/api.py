@@ -24,11 +24,9 @@ def get_face_extractor(extractor_classifier):
 
 
 def get_video_writer(camera, filename):
-    fps = camera.get(cv2.CAP_PROP_FPS)
-    size = (int(camera.get(cv2.CAP_PROP_FRAME_WIDTH)),
-            int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    size = (int(camera.frame_width), int(camera.frame_height))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    return VideoWriter(cv2.VideoWriter(output, fourcc, fps, size))
+    return VideoWriter(cv2.VideoWriter(filename, fourcc, camera.fps, size))
 
 
 def get_window(name):

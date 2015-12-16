@@ -2,6 +2,7 @@ import cv2
 import time
 import copy
 import imutils
+import numpy
 
 from .contours import Contour
 
@@ -80,3 +81,18 @@ class Frame:
 
     def write(self, filename):
         cv2.imwrite(filename, self.frame)
+
+    def gray_to_rgb(self):
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_GRAY2RGB)
+
+    def bgr_to_rgb(self):
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+
+    def gray_to_rgb_copy(self):
+        return Frame(cv2.cvtColor(self.frame, cv2.COLOR_GRAY2RGB))
+
+    def bgr_to_rgb_copy(self):
+        return Frame(cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB))
+
+    def to_string(self):
+        return numpy.ndarray.tostring(self.frame)
