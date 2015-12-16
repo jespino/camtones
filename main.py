@@ -63,9 +63,15 @@ def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize,
 @click.option("--progress", is_flag=True, help="print progress")
 @click.option("--resize", type=int, help="print progress")
 @click.option("--blur", type=int, help="print progress")
+@click.option(
+    "--subtractor",
+    type=click.Choice(ocv.get_supported_subtractors().keys()),
+    default="MOG2" if "MOG2" in ocv.get_supported_subtractors() else "KNN",
+    help="select background subtractor"
+)
 @click.pass_context
-def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, resize, blur):
-    MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur).run()
+def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, resize, blur, subtractor):
+    MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, subtractor).run()
 
 
 @cli.command(help="Show a video or camera device highlighting the detected faces")

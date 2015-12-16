@@ -6,7 +6,7 @@ from .contours import Contour
 from .frames import Frame
 from .windows import Window
 from .cameras import Camera
-from .bgextractors import BackgroundExtractor
+from .background_subtractors import BackgroundSubtractor
 from .video_writers import VideoWriter
 from .face_extractors import FaceExtractor, HAARS_DIRECTORY
 
@@ -15,8 +15,8 @@ def get_camera(id_or_filename):
     return Camera(id_or_filename)
 
 
-def get_background_extractor(extractor_type):
-    return BackgroundExtractor(extractor_type)
+def get_background_subtractor(subtractor):
+    return BackgroundSubtractor(subtractor)
 
 
 def get_face_extractor(extractor_classifier):

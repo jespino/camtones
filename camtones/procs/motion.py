@@ -8,7 +8,7 @@ class MotionBaseProcess(object):
         self.debug = debug
 
         self.camera = ocv.get_camera(video)
-        self.fgbg = ocv.get_background_extractor(subtractor)
+        self.fgbg = ocv.get_background_subtractor(subtractor)
 
         if self.debug:
             self.fgmask_window = ocv.get_window("FGMASK")
@@ -128,8 +128,8 @@ class MotionExtractProcess(MotionBaseProcess):
 
 
 class MotionExtractEDLProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, output, progress, resize, blur):
-        super(MotionExtractProcess, self).__init__(video, debug)
+    def __init__(self, video, debug, exclude, output, progress, resize, blur, subtractor):
+        super(MotionExtractProcess, self).__init__(video, debug, subtractor)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
