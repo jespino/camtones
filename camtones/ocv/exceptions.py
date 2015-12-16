@@ -1,0 +1,2 @@
+class InvalidHaarCascade(Exception):
+    pass

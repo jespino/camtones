@@ -76,6 +76,11 @@ def face_detect(ctx, video_or_device, classifier):
     FaceDetectProcess(video_or_device, ctx.obj['DEBUG'], classifier).run()
 
 
+@cli.command(help="List the available face classifiers")
+def classifiers():
+    for classifier in ocv.get_stock_classifiers():
+        click.echo(" - {}".format(classifier))
+
 @cli.command(help="Generate a set of images from a video or camera device with the detected faces")
 @click.argument("video-or-device")
 @click.argument("output-directory")

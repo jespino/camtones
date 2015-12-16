@@ -1,4 +1,6 @@
 import cv2
+import os
+import re
 
 from .contours import Contour
 from .frames import Frame
@@ -6,7 +8,7 @@ from .windows import Window
 from .cameras import Camera
 from .bgextractors import BackgroundExtractor
 from .video_writers import VideoWriter
-from .face_extractors import FaceExtractor
+from .face_extractors import FaceExtractor, HAARS_DIRECTORY
 
 
 def get_camera(id_or_filename):
@@ -16,8 +18,10 @@ def get_camera(id_or_filename):
 def get_background_extractor(extractor_type):
     return BackgroundExtractor(extractor_type)
 
+
 def get_face_extractor(extractor_classifier):
     return FaceExtractor(extractor_classifier)
+
 
 def get_video_writer(camera, filename):
     fps = camera.get(cv2.CAP_PROP_FPS)
@@ -45,3 +49,8 @@ def get_supported_subtractors():
     return supported_subtractors
 
 
+def get_stock_classifiers():
+    for haar in os.listdir(HAARS_DIRECTORY):
+        result = re.match("haarcascade_(\w+).xml", haar)
+        if result:
+            yield result.group(1)

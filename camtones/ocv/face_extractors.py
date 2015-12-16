@@ -1,9 +1,21 @@
 import cv2
+import os
+
+from .exceptions import InvalidHaarCascade
+
+HAARS_DIRECTORY = os.path.join(os.path.dirname(os.path.dirname(__file__)), "haars")
 
 
 class FaceExtractor:
     def __init__(self, classifier):
-        self._face_extractor = cv2.CascadeClassifier(classifier)
+        if os.path.exists(classifier):
+            self._face_extractor = cv2.CascadeClassifier(classifier)
+        elif os.path.exists(os.path.join(HAARS_DIRECTORY, "haarcascade_{}.xml".format(classifier))):
+            self._face_extractor = cv2.CascadeClassifier(
+                os.path.join(HAARS_DIRECTORY, "haarcascade_{}.xml".format(classifier))
+            )
+        else:
+            raise InvalidHaarCascade(classifier)
 
     def get_faces(self, frame):
         gray = frame.gray_copy()
