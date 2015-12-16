@@ -1,5 +1,8 @@
 from camtones.ocv import api as ocv
 
+from progressbar import ProgressBar, Bar, ETA
+
+
 class FaceBaseProcess(object):
     def __init__(self, video, debug, classifier):
         self.debug = debug
@@ -34,9 +37,14 @@ class FaceDetectProcess(FaceBaseProcess):
 
 
 class FaceExtractProcess(FaceBaseProcess):
-    def __init__(self, video, debug, output, classifier):
+    def __init__(self, video, debug, output, classifier, progress):
         super(FaceExtractProcess, self).__init__(video, debug, classifier)
         self.output = output
+
+        self.progress = None
+        if progress:
+            widgets = [Bar('>'), ' ', ETA()]
+            self.progress = ProgressBar(widgets=widgets, max_value=self.camera.frames)
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
@@ -50,7 +58,10 @@ class FaceExtractProcess(FaceBaseProcess):
         for (x, y, w, h) in faces:
             counter += 1
             croped = frame.crop_copy((x, y), (x + w, y + h))
-            filename = "{}/{}-{}.png".format(self.output, self.camera.current_pos, counter)
-            ocv.write_frame(filename)
+            filename = os.path.join(self.output, "{}-{}.png".format(self.camera.current_pos, counter))
+            croped.write(filename)
+
+        if self.progress:
+            self.progress.update(self.camera.current_frame)
 
         return True

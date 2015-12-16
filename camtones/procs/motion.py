@@ -1,5 +1,7 @@
 import time
 
+from progressbar import ProgressBar, Bar, ETA
+
 from camtones.ocv import api as ocv
 
 
@@ -92,11 +94,12 @@ class MotionExtractProcess(MotionBaseProcess):
         self.blur = blur
         self.output = output
         self.show_time = show_time
-        self.progress = progress
+        self.progress = None
+        if progress:
+            widgets = [Bar('>'), ' ', ETA()]
+            self.progress = ProgressBar(widgets=widgets, max_value=self.camera.frames)
 
         self.output = ocv.get_video_writer(self.camera, output)
-
-        self.last_percentage = 0
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
@@ -119,29 +122,30 @@ class MotionExtractProcess(MotionBaseProcess):
             self.output.write(frame.frame)
 
         if self.progress:
-            percentage = (self.camera.current_frame * 100) / self.camera.frames
-            if int(self.last_percentage) != int(percentage):
-                print("{}%".format(int(percentage)))
-                self.last_percentage = percentage
+            self.progress.update(self.camera.current_frame)
 
         return True
 
 
 class MotionExtractEDLProcess(MotionBaseProcess):
     def __init__(self, video, debug, exclude, output, progress, resize, blur, subtractor):
-        super(MotionExtractProcess, self).__init__(video, debug, subtractor)
+        super(MotionExtractEDLProcess, self).__init__(video, debug, subtractor)
         self.exclude = exclude
         self.resize = resize
         self.blur = blur
         self.output = output
-        self.progress = progress
+
+        self.progress = None
+        if progress:
+            widgets = [Bar('>'), ' ', ETA()]
+            self.progress = ProgressBar(widgets=widgets, max_value=self.camera.frames)
 
         self.output = open(output, "w")
         self.start_silence = 0
-        self.last_percentage = 0
 
     def __del__(self):
-        self.camera.release()
+        if self.progress:
+            self.progress.finish()
 
     def process_frame(self):
         (grabbed, frame) = self.camera.read()
@@ -165,9 +169,6 @@ class MotionExtractEDLProcess(MotionBaseProcess):
             self.start_silence = None
 
         if self.progress:
-            percentage = (self.camera.current_frame * 100) / self.camera.frames
-            if int(self.last_percentage) != int(percentage):
-                print("{}%".format(int(percentage)))
-                self.last_percentage = percentage
+            self.progress.update(self.camera.current_frame)
 
         return True

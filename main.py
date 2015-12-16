@@ -24,8 +24,8 @@ def cli(ctx, debug, version):
 @cli.command(help="Show a video or camera device highlighting the detected motion")
 @click.argument("video-or-device")
 @click.option("--exclude", help="python expression to exclude results")
-@click.option("--resize", type=int, help="print progress")
-@click.option("--blur", type=int, help="print progress")
+@click.option("--resize", type=int, help="resize the image before detect")
+@click.option("--blur", type=int, help="blur the mask before detect")
 @click.option(
     "--subtractor",
     type=click.Choice(ocv.get_supported_subtractors().keys()),
@@ -42,8 +42,8 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--progress", is_flag=True, help="print progress")
-@click.option("--resize", type=int, help="print progress")
-@click.option("--blur", type=int, help="print progress")
+@click.option("--resize", type=int, help="resize the image before detect")
+@click.option("--blur", type=int, help="blur the mask before detect")
 @click.option("--show-time", is_flag=True, help="show the current time")
 @click.option(
     "--subtractor",
@@ -61,8 +61,8 @@ def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize,
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--progress", is_flag=True, help="print progress")
-@click.option("--resize", type=int, help="print progress")
-@click.option("--blur", type=int, help="print progress")
+@click.option("--resize", type=int, help="resize the image before detect")
+@click.option("--blur", type=int, help="blur the mask before detect")
 @click.option(
     "--subtractor",
     type=click.Choice(ocv.get_supported_subtractors().keys()),
@@ -91,9 +91,10 @@ def classifiers():
 @click.argument("video-or-device")
 @click.argument("output-directory")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
+@click.option("--progress", is_flag=True, help="print progress")
 @click.pass_context
-def face_extract(ctx, video_or_device, output_directory, classifier):
-    FaceExtractProcess(video_or_device, ctx.obj['DEBUG'], output_directory, classifier).run()
+def face_extract(ctx, video_or_device, output_directory, classifier, progress):
+    FaceExtractProcess(video_or_device, ctx.obj['DEBUG'], output_directory, classifier, progress).run()
 
 
 if __name__ == '__main__':
