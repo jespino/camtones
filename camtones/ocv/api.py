@@ -31,15 +31,17 @@ def get_window(name):
     return Window(name)
 
 
-def get_supported_substractors():
-    supported_substractors = {}
+def get_supported_subtractors():
+    supported_subtractors = {}
     if hasattr(cv2, "createBackgroundSubtractorGMG"):
-        supported_substractors["GMG"] = cv2.createBackgroundSubtractorGMG
+        supported_subtractors["GMG"] = cv2.createBackgroundSubtractorGMG
     if hasattr(cv2, "createBackgroundSubtractorKNN"):
-        supported_substractors["KNN"] = cv2.createBackgroundSubtractorKNN
+        supported_subtractors["KNN"] = cv2.createBackgroundSubtractorKNN
     if hasattr(cv2, "createBackgroundSubtractorMOG"):
-        supported_substractors["MOG"] = cv2.createBackgroundSubtractorMOG
+        supported_subtractors["MOG"] = cv2.createBackgroundSubtractorMOG
     if hasattr(cv2, "createBackgroundSubtractorMOG2"):
-        supported_substractors["MOG2"] = cv2.createBackgroundSubtractorMOG2
+        supported_subtractors["MOG2"] = cv2.createBackgroundSubtractorMOG2
 
-    return supported_substractors
+    return supported_subtractors
+
+
