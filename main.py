@@ -21,7 +21,7 @@ def cli(ctx, debug, version):
     ctx.obj['DEBUG'] = debug
 
 
-@cli.command()
+@cli.command(help="Show a video or camera device highlighting the detected motion")
 @click.argument("video-or-device")
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--resize", type=int, help="print progress")
@@ -37,7 +37,7 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
     MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur, subtractor).run()
 
 
-@cli.command()
+@cli.command(help="Generate video file from a video or camera device without the no-motion sections")
 @click.argument("video-or-device")
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
@@ -56,7 +56,7 @@ def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize,
     MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time, subtractor).run()
 
 
-@cli.command()
+@cli.command(help="Generate an EDL file from a video or camera device to skip no-motion sections")
 @click.argument("video-or-device")
 @click.argument("output-file")
 @click.option("--exclude", help="python expression to exclude results")
@@ -68,7 +68,7 @@ def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, res
     MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur).run()
 
 
-@cli.command()
+@cli.command(help="Show a video or camera device highlighting the detected faces")
 @click.argument("video-or-device")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
 @click.pass_context
@@ -76,7 +76,7 @@ def face_detect(ctx, video_or_device, classifier):
     FaceDetectProcess(video_or_device, ctx.obj['DEBUG'], classifier).run()
 
 
-@cli.command()
+@cli.command(help="Generate a set of images from a video or camera device with the detected faces")
 @click.argument("video-or-device")
 @click.argument("output-directory")
 @click.option("--classifier", help="path to the cascade classifier file", required=True)
