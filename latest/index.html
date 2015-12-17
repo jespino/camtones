@@ -95,11 +95,27 @@
 </li>
 <li><a href="#quickstart">Quick Start</a>
 <ul class="sectlevel2">
-<li><a href="#motion-detection">Motion detection</a></li>
+<li><a href="#tunning">Tunning</a></li>
+<li><a href="#running-extraction">Running extraction</a></li>
 </ul>
 </li>
-<li><a href="#concepts">Concepts</a></li>
-<li><a href="#developers-guide">Developers Guide</a>
+<li><a href="#commands">Commands</a>
+<ul class="sectlevel2">
+<li><a href="#motion-detection">Motion detection</a></li>
+<li><a href="#motion-extraction">Motion extraction</a></li>
+<li><a href="#motion-extraction-edl">Motion extraction edl</a></li>
+<li><a href="#face-classifiers">Classifiers</a></li>
+<li><a href="#face-detection">Face detection</a></li>
+<li><a href="#face-extraction">Face extraction</a></li>
+</ul>
+</li>
+<li><a href="#tunning-parameters">Tunning parameters</a>
+<ul class="sectlevel2">
+<li><a href="#tunning-motion-parameters">Motion detection/extraction</a></li>
+<li><a href="#face-detection-extraction">Face detection/extraction</a></li>
+</ul>
+</li>
+<li><a href="#contributing">Contributing</a>
 <ul class="sectlevel2">
 <li><a href="#philosophy">Philosophy</a></li>
 <li><a href="#source-code">Source Code</a></li>
@@ -120,10 +136,10 @@ security camera videos for process motion and faces.</p>
 <div class="sect2">
 <h3 id="rationale"><a class="link" href="#rationale">Rationale</a></h3>
 <div class="paragraph">
-<p>I start writting this program because I need to review hours of security camera
+<p>I start writing this program because I need to review hours of security camera
 videos and that&#8217;s sounds really boring and time consuming. The main objetive is
 to easy the task of reviewing static camera videos applying motion detection
-through Background substracion</p>
+through Background subtraction.</p>
 </div>
 <div class="paragraph">
 <p>Here a incomplete list of things that <em>CamToNES</em> aims to archieve:</p>
@@ -137,7 +153,7 @@ through Background substracion</p>
 <p>Provide a simple way to tune the parameters for correctly detect relevant motion.</p>
 </li>
 <li>
-<p>Provide a simple way to realtime detection of movement and faces.</p>
+<p>Provide a simple way to real-time detection of movement and faces.</p>
 </li>
 </ul>
 </div>
@@ -150,7 +166,7 @@ through Background substracion</p>
 <p>To be a fully feature interface to OpenCV.</p>
 </li>
 <li>
-<p>To provide an exaustive set of tune parameters.</p>
+<p>To provide an exhaustive set of tune parameters.</p>
 </li>
 </ul>
 </div>
@@ -164,7 +180,7 @@ through Background substracion</p>
 <div class="sect2">
 <h3 id="dependencies"><a class="link" href="#dependencies">Dependencies</a></h3>
 <div class="paragraph">
-<p><em>CamToNES</em> depends on OpenCV 3.0 and python &gt;= 3.4.</p>
+<p><em>CamToNES</em> depends on OpenCV 3.0 and python &gt;= 2.7.</p>
 </div>
 </div>
 <div class="sect2">
@@ -184,22 +200,336 @@ through Background substracion</p>
 <h2 id="quickstart"><a class="link" href="#quickstart">Quick Start</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section intends to explain how to get <em>catacumba</em> up and running.</p>
+<p>The best approach to start to understand how to process a video with <em>CamToNES</em>
+is using the <em>motion_wizard</em> command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones motion_wizard my_video_file.avi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will see something like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/motion-wizard.png" alt="Motion Wizard">
+</div>
+<div class="title">Figure 1. Motion Wizard</div>
+</div>
+<div class="paragraph">
+<p>The motion wizard allow you to "tune" the parameters used to extract the motion
+sections from a video file.</p>
 </div>
 <div class="sect2">
-<h3 id="motion-detection"><a class="link" href="#motion-detection">Motion detection</a></h3>
-
+<h3 id="tunning"><a class="link" href="#tunning">Tunning</a></h3>
+<div class="paragraph">
+<p>You can see the <a href="#tunning-motion-parameters">Motion Detection/Extraction Parameters</a> section to
+understand better the purpose and the behavior of each parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="running-extraction"><a class="link" href="#running-extraction">Running extraction</a></h3>
+<div class="paragraph">
+<p>After ensure that you have tunned it correctly, you can start to capture it in
+a new video file, or an .edl file.</p>
+</div>
+<div class="paragraph">
+<p>This will have the same behavior if you run the
+<a href="#motion-extraction">motion_extract</a> or
+<a href="#motion-extraction-edl">motion_extract_edl</a> commands in the command line, with
+the parameters defined in the wizard.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="concepts"><a class="link" href="#concepts">Concepts</a></h2>
+<h2 id="commands"><a class="link" href="#commands">Commands</a></h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="motion-detection"><a class="link" href="#motion-detection">Motion detection</a></h3>
+<div class="paragraph">
+<p>The motion detection reproduce a video or use the video of the webcam, and draw
+a rect on the detected motion.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can view motion detected by your webcam with the next command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones motion_detect 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or the same with a video with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones motion_detect my_video_file.avi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can tune it with some <a href="#tunning-motion-parameters">Motion Detection/Extraction Parameters</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="motion-extraction"><a class="link" href="#motion-extraction">Motion extraction</a></h3>
+<div class="paragraph">
+<p>The motion extraction generate a video containing only the frames that have motion on it.</p>
+</div>
+<div class="paragraph">
+<p>This command have the <em>--show-time</em> special option that draw a timer that refer
+the time of the original video.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can generate a motion only video from a security camera video
+with the next command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones motion_extract --progress --show-time --exclude <span class="tok-s2">&quot;rect.area &lt; 10000&quot;</span> my_video_file.avi my_motion_only_video.avi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>--progress</em> option enable a progress bar.</p>
+</div>
+<div class="paragraph">
+<p>You can tune it with some <a href="#tunning-motion-parameters">Motion Detection/Extraction Parameters</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="motion-extraction-edl"><a class="link" href="#motion-extraction-edl">Motion extraction edl</a></h3>
+<div class="paragraph">
+<p>The motion extraction edl generate a edl file (Edit decision list) containing the information to skip no motion sections of the video.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can generate a edl file for a security camera video
+with the next command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones motion_extract_edl --progress --exclude <span class="tok-s2">&quot;rect.area &lt; 10000&quot;</span> my_video_file.avi my_video_file.edl</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>--progress</em> option enable a progress bar.</p>
+</div>
+<div class="paragraph">
+<p>After generating the edl file, you can reproduce it with the next <em>mplayer</em>
+command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">mplayer -edl my_video_file.edl my_video_file.avi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can tune it with some <a href="#tunning-motion-parameters">Motion Detection/Extraction Parameters</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="face-classifiers"><a class="link" href="#face-classifiers">Classifiers</a></h3>
+<div class="paragraph">
+<p>The classifiers command list the included in <em>CamToNES</em> classifiers for face detection/extraction.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="face-detection"><a class="link" href="#face-detection">Face detection</a></h3>
+<div class="paragraph">
+<p>The motion detection reproduce a video or use the video of the webcam, and draw
+a rect on the detected faces.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can view face detected by your webcam with the next command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones face_detect --classifier frontalface_default 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or the same with a video with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones face_detect --classifier frontalface_default my_video_file.avi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can understand better how face detection works in the section <a href="#tunning-face-parameters">Face Detection/Extraction Parameters</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="face-extraction"><a class="link" href="#face-extraction">Face extraction</a></h3>
+<div class="paragraph">
+<p>The face extraction generate a set of files containing faces detected in the video.</p>
+</div>
+<div class="paragraph">
+<p>For example, you can extract faces from a security camera video with the next
+command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">mkdir faces
+camtones face_extract --progress  --classifier frontalface_default my_video_file.avi faces</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>--progress</em> option enable a progress bar.</p>
+</div>
+<div class="paragraph">
+<p>You can understand better how face detection works in the section <a href="#tunning-face-parameters">Face Detection/Extraction Parameters</a>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="developers-guide"><a class="link" href="#developers-guide">Developers Guide</a></h2>
+<h2 id="tunning-parameters"><a class="link" href="#tunning-parameters">Tunning parameters</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="tunning-motion-parameters"><a class="link" href="#tunning-motion-parameters">Motion detection/extraction</a></h3>
+<div class="paragraph">
+<p>The motion extraction/detection get the images of a video, and process it to
+detect changes between one frame and the previous. This approach, normally,
+generate a lot of false positives because we are searching for big solid
+objects in the camera, not small leafs moved by the wind.</p>
+</div>
+<div class="paragraph">
+<p>For remove this false positive <em>CamToNES</em> process the differences image to
+remove this false positive.  But the false positive can means different things
+for different videos, this is the reason to need tunning the extraction.</p>
+</div>
+<div class="sect3">
+<h4 id="the-process"><a class="link" href="#the-process">The Process</a></h4>
+<div class="paragraph">
+<p>To filter the image, <em>CamToNES</em> follow the next process. Get a frame from the
+video, resize it (if the user have define a <a href="#motion-resize">resize</a>
+parameter), process it through a background extraction
+<a href="#motion-algorithms">algorithm</a> (MOG2 or KNN). As result, we get a mask of
+differences between the background and the current frame.</p>
+</div>
+<div class="paragraph">
+<p>After get the differences mask, we apply to this mask the
+<a href="#motion-blur">blur</a> defined by the user.</p>
+</div>
+<div class="paragraph">
+<p>After blur the mask, we discard all grays, using the <em>threshold</em> provided by
+the user, this means, that every gray darker than the threshold will be black,
+and every gray lighter than the threshold will be white.</p>
+</div>
+<div class="paragraph">
+<p>Every white element remaining in the mask after this process will generate a
+<em>rectangle</em> result.</p>
+</div>
+<div class="paragraph">
+<p>This rectangles are filtered by the <em>exclude</em> parameter.</p>
+</div>
+<div class="paragraph">
+<p>If a frame have a not-excluded rectangle, the frame is a motion frame, else, is
+a static frame.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="motion-resize"><a class="link" href="#motion-resize">Resize</a></h4>
+<div class="paragraph">
+<p>You can resize the image before processing with the <em>--resize</em> option. This is
+done for process the result faster or for discard some video imperfections.</p>
+</div>
+<div class="paragraph">
+<p>The value must be a number of pixels of the new width of the frames.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="motion-algorithms"><a class="link" href="#motion-algorithms">Algorithms</a></h4>
+<div class="paragraph">
+<p>You can defined with the <em>--subtractor</em> parameter the algorithm to use, normally
+MOG2 and KNN, but depends on your installation. You can see all supported
+algorithms running <em>motion_detect</em>, <em>motion_extract</em> or <em>motion_extract_edl</em>
+with the <em>--help</em> option.</p>
+</div>
+<div class="paragraph">
+<p>The value must be one of the allowed options (normally MOG2 or KNN).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="motion-blur"><a class="link" href="#motion-blur">Blur</a></h4>
+<div class="paragraph">
+<p>You can blur the mask to remove camera imperfections or irrelevant small
+movements with the <em>--blur</em> option.</p>
+</div>
+<div class="paragraph">
+<p>The value must be a number of pixels.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="motion-threshold"><a class="link" href="#motion-threshold">Threshold</a></h4>
+<div class="paragraph">
+<p>You discard gray zones in the mask with the <em>--threshold</em> option (this normally
+combined with the blur allow to remove imperfections or small movements). The
+KNN and MOG2 algorithms detect shadows and assign the gray with value 127 to
+the shadows.</p>
+</div>
+<div class="paragraph">
+<p>The value must be a number between 0 and 255.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="motion-exclude"><a class="link" href="#motion-exclude">Exclude</a></h4>
+<div class="paragraph">
+<p>You can exclude result rectangles with the <em>--exclude</em> option. This option
+receive a python expression that is evaluated to True or False. If the expression
+evaluate to True, the rectangle is discarded.</p>
+</div>
+<div class="paragraph">
+<p>The value must be a valid python expression, and you will have access to the
+variables <em>rect</em> and <em>frame</em>.</p>
+</div>
+<div class="paragraph">
+<p>The <em>rect</em> variable will have the attributes x, y, width, height and area.</p>
+</div>
+<div class="paragraph">
+<p>The <em>frame</em> variable will have the attributes width, height and area.</p>
+</div>
+<div class="paragraph">
+<p>You can use it, for example, to discard any movement with an area smaller than
+10000 pixels with the next expression:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span class="tok-n">rect</span><span class="tok-o">.</span><span class="tok-n">area</span> <span class="tok-o">&lt;</span> <span class="tok-mi">10000</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="face-detection-extraction"><a class="link" href="#face-detection-extraction">Face detection/extraction</a></h3>
+<div class="paragraph">
+<p>The face detection is really a object recognition system based on Haar
+features. This only means that you can detect objects based on files generated
+through machine learning. OpenCV comes with some of this files that are
+included in <em>CamToNES</em>.</p>
+</div>
+<div class="paragraph">
+<p>You can define your classifier with the parameter <em>--classifier</em> in the
+<em>face_detect</em> and <em>face_extract</em> commands.</p>
+</div>
+<div class="paragraph">
+<p>And you can list the available classifiers with the <em>classifiers</em> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">camtones classifiers</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use any of this classifiers or use another one using the <em>--classifier</em>
+option with the file path as parameter.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contributing"><a class="link" href="#contributing">Contributing</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="philosophy"><a class="link" href="#philosophy">Philosophy</a></h3>
@@ -283,7 +613,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-15 15:28:52 CET
+Last updated 2015-12-17 16:29:46 CET
 </div>
 </div>
 </body>
