@@ -13,7 +13,7 @@ v0.0.1
 == Introduction
 
 _CamToNES_ (Camera To Not-Empty Sequence) is command line interface for process
-security camera videos for process motion and faces.
+security camera videos to get motion and faces.
 
 === Rationale
 
