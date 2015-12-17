@@ -72,43 +72,138 @@ sections from a video file.
 
 === Tunning
 
-You can see the link:#tunning-parameters[Tunning Parameters] section to
+You can see the link:#tunning-motion-parameters[Motion Detection/Extraction Parameters] section to
 understand better the porpose and the behavior of each paramter.
 
 === Running extraction
 
-After ensure that you have tunned it correctly, you
-can start to capture it in a new video file, or an .edl file.
+After ensure that you have tunned it correctly, you can start to capture it in
+a new video file, or an .edl file.
 
-This will have the same behavior if you run the _motion_extract_ or
-_motion_extract_edl_ commands in the command line, with the parameters defined
-in the wizard.
+This will have the same behavior if you run the
+link:#motion-extraction[motion_extract] or
+link:#motion-extraction-edl[motion_extract_edl] commands in the command line, with
+the parameters defined in the wizard.
 
-=== Reproducing extracted edl
-
-If you extract the video to an edl file, you can reproduce it with, for
-example, _mplayer_ with the next command:
-
-[source,bash]
-----
-mplayer -edl my_video_file.avi.edl my_video_file.avi
-----
-
-The edl file will say _mplayer_ when have to jump to next position with motion
-detected.
+== Commands
 
 [[motion-detection]]
 === Motion detection
 
+The motion detection reproduce a video or use the video of the webcam, and draw
+a rect on the detected motion.
+
+For example, you can view motion detected by your webcam with the next command:
+
+[source,bash]
+----
+camtones motion_detect 0
+----
+
+or the same with a video with
+
+[source,bash]
+----
+camtones motion_detect my_video_file.avi
+----
+
+You can tune it with some link:#tunning-motion-parameters[Motion Detection/Extraction Parameters].
+
 [[motion-extraction]]
-=== Motion detection
+=== Motion extraction
+
+The motion extraction generate a video containing only the frames that have motion on it.
+
+This command have the _--show-time_ special option that draw a timer that refer
+the time of the original video.
+
+For example, you can generate a motion only video from a security camera video
+with the next command:
+
+[source,bash]
+----
+camtones motion_extract --progress --show-time --exclude "rect.area < 10000" my_video_file.avi my_motion_only_video.avi
+----
+
+The _--progress_ option enable a progress bar.
+
+You can tune it with some link:#tunning-motion-parameters[Motion Detection/Extraction Parameters].
 
 [[motion-extraction-edl]]
 === Motion extraction edl
 
-[[tunning-parameters, Tunning Parameters]]
+The motion extraction edl generate a edl file (Edit decision list) containing the information to skip no motion sections of the video.
+
+For example, you can generate a edl file for a security camera video
+with the next command:
+
+[source,bash]
+----
+camtones motion_extract_edl --progress --exclude "rect.area < 10000" my_video_file.avi my_video_file.edl
+----
+
+The _--progress_ option enable a progress bar.
+
+After generating the edl file, you can reproduce it with the next _mplayer_
+command:
+
+[source,bash]
+----
+mplayer -edl my_video_file.edl my_video_file.avi
+----
+
+You can tune it with some link:#tunning-motion-parameters[Motion Detection/Extraction Parameters].
+
+[[face-classifiers]]
+=== Classifiers
+
+The classifiers command list the included in _CamToNES_ classifiers for face detection/extraction.
+
+[[face-detection]]
+=== Face detection
+
+The motion detection reproduce a video or use the video of the webcam, and draw
+a rect on the detected faces.
+
+For example, you can view face detected by your webcam with the next command:
+
+[source,bash]
+----
+camtones face_detect --classifier frontalface_default 0
+----
+
+or the same with a video with
+
+[source,bash]
+----
+camtones face_detect --classifier frontalface_default my_video_file.avi
+----
+
+You can understand better how face detection works in the section link:#tunning-face-parameters[Face Detection/Extraction Parameters].
+
+
+[[face-extraction]]
+=== Face extraction
+
+The face extraction generate a set of files containing faces detected in the video.
+
+For example, you can extract faces from a security camera video with the next
+command:
+
+[source,bash]
+----
+mkdir faces
+camtones face_extract --progress  --classifier frontalface_default my_video_file.avi faces
+----
+
+The _--progress_ option enable a progress bar.
+
+You can understand better how face detection works in the section link:#tunning-face-parameters[Face Detection/Extraction Parameters].
+
+
 == Tunning parameters
 
+[[tunning-motion-parameters]]
 === Motion detection/extraction
 
 The motion extraction/detection get the images of a video, and process it to
@@ -202,6 +297,24 @@ rect.area < 10000
 ----
 
 === Face detection/extraction
+
+The face detection is really a object recognition system based on Haar
+features. This only means that you can detect objects based on files generated
+through machine learning. OpenCV comes with some of this files that are
+included in _CamToNES_.
+
+You can define your classifier with the parameter _--classifier_ in the
+_face_detect_ and _face_extract_ commands.
+
+And you can list the available classifiers with the _classifiers_ command:
+
+[source,bash]
+----
+camtones classifiers
+----
+
+You can use any of this classifiers or use another one using the _--classifier_
+option with the file path as parameter.
 
 == Contributing
 
