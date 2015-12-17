@@ -11,8 +11,12 @@ from camtones.ocv import api as ocv
 
 
 class MotionBaseProcess(object):
-    def __init__(self, video, debug, subtractor):
+    def __init__(self, video, debug, subtractor, blur, resize, exclude, threshold):
         self.debug = debug
+        self.exclude = exclude
+        self.resize = resize
+        self.blur = blur
+        self.threshold = threshold
 
         self.camera = ocv.get_camera(video)
         self.fgbg = ocv.get_background_subtractor(subtractor)
@@ -37,7 +41,9 @@ class MotionBaseProcess(object):
         fgmask = self.fgbg.apply(frame)
         if self.blur:
             fgmask.blur(self.blur)
-        fgmask.threshold(128)
+
+        if self.threshold:
+            fgmask.threshold(self.threshold)
 
         if self.debug:
             self.fgmask_window.show(fgmask)
@@ -60,11 +66,8 @@ class MotionBaseProcess(object):
 
 
 class MotionDetectProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, resize, blur, subtractor):
-        super(MotionDetectProcess, self).__init__(video, debug, subtractor)
-        self.exclude = exclude
-        self.resize = resize
-        self.blur = blur
+    def __init__(self, video, debug, exclude, resize, blur, threshold, subtractor):
+        super(MotionDetectProcess, self).__init__(video, debug, subtractor, blur, resize, exclude, threshold)
 
         self.window = ocv.get_window("Motion extract")
 
@@ -92,11 +95,8 @@ class MotionDetectProcess(MotionBaseProcess):
 
 
 class MotionExtractProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, output, progress, resize, blur, show_time, subtractor):
-        super(MotionExtractProcess, self).__init__(video, debug, subtractor)
-        self.exclude = exclude
-        self.resize = resize
-        self.blur = blur
+    def __init__(self, video, debug, exclude, output, progress, resize, blur, threshold, show_time, subtractor):
+        super(MotionExtractProcess, self).__init__(video, debug, subtractor, blur, resize, exclude, threshold)
         self.output = output
         self.show_time = show_time
         self.progress = None
@@ -133,11 +133,8 @@ class MotionExtractProcess(MotionBaseProcess):
 
 
 class MotionExtractEDLProcess(MotionBaseProcess):
-    def __init__(self, video, debug, exclude, output, progress, resize, blur, subtractor):
-        super(MotionExtractEDLProcess, self).__init__(video, debug, subtractor)
-        self.exclude = exclude
-        self.resize = resize
-        self.blur = blur
+    def __init__(self, video, debug, exclude, output, progress, resize, blur, threshold, subtractor):
+        super(MotionExtractEDLProcess, self).__init__(video, debug, subtractor, blur, resize, exclude, threshold)
         self.output = output
 
         self.progress = None
@@ -320,7 +317,7 @@ class UI:
             resize=self.frame_processor.resize,
             debug=False,
             progress=True,
-            # threshold=self.frame_processor.threshold,
+            threshold=self.frame_processor.threshold,
             output="{}.edl".format(self.video)
         )
         self.builder.get_object("window").hide()
@@ -338,7 +335,7 @@ class UI:
             debug=False,
             progress=True,
             show_time=True,
-            # threshold=self.frame_processor.threshold,
+            threshold=self.frame_processor.threshold,
             output="{}-out.avi".format(self.video)
         )
         self.builder.get_object("window").hide()

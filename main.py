@@ -26,6 +26,7 @@ def cli(ctx, debug, version):
 @click.option("--exclude", help="python expression to exclude results")
 @click.option("--resize", type=int, help="resize the image before detect")
 @click.option("--blur", type=int, help="blur the mask before detect")
+@click.option("--threshold", type=click.IntRange(0, 255), help="threshold the mask before detect")
 @click.option(
     "--subtractor",
     type=click.Choice(ocv.get_supported_subtractors().keys()),
@@ -33,8 +34,8 @@ def cli(ctx, debug, version):
     help="select background subtractor"
 )
 @click.pass_context
-def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
-    MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur, subtractor).run()
+def motion_detect(ctx, video_or_device, exclude, resize, blur, threshold, subtractor):
+    MotionDetectProcess(video_or_device, ctx.obj['DEBUG'], exclude, resize, blur, threshold, subtractor).run()
 
 
 @cli.command(help="Generate video file from a video or camera device without the no-motion sections")
@@ -44,6 +45,7 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
 @click.option("--progress", is_flag=True, help="print progress")
 @click.option("--resize", type=int, help="resize the image before detect")
 @click.option("--blur", type=int, help="blur the mask before detect")
+@click.option("--threshold", type=click.IntRange(0, 255), help="threshold the mask before detect")
 @click.option("--show-time", is_flag=True, help="show the current time")
 @click.option(
     "--subtractor",
@@ -52,8 +54,8 @@ def motion_detect(ctx, video_or_device, exclude, resize, blur, subtractor):
     help="select background subtractor"
 )
 @click.pass_context
-def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, show_time, subtractor):
-    MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, show_time, subtractor).run()
+def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize, blur, threshold, show_time, subtractor):
+    MotionExtractProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, threshold, show_time, subtractor).run()
 
 
 @cli.command(help="Generate an EDL file from a video or camera device to skip no-motion sections")
@@ -63,6 +65,7 @@ def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize,
 @click.option("--progress", is_flag=True, help="print progress")
 @click.option("--resize", type=int, help="resize the image before detect")
 @click.option("--blur", type=int, help="blur the mask before detect")
+@click.option("--threshold", type=click.IntRange(0, 255), help="threshold the mask before detect")
 @click.option(
     "--subtractor",
     type=click.Choice(ocv.get_supported_subtractors().keys()),
@@ -70,8 +73,8 @@ def motion_extract(ctx, video_or_device, output_file, exclude, progress, resize,
     help="select background subtractor"
 )
 @click.pass_context
-def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, resize, blur, subtractor):
-    MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, subtractor).run()
+def motion_extract_edl(ctx, video_or_device, output_file, exclude, progress, resize, blur, threshold, subtractor):
+    MotionExtractEDLProcess(video_or_device, ctx.obj['DEBUG'], exclude, output_file, progress, resize, blur, threshold, subtractor).run()
 
 
 @cli.command(help="Calibrate and run motion detection")
