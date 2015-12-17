@@ -54,14 +54,156 @@ pip install camtones
 [[quickstart]]
 == Quick Start
 
-This section intends to explain how to get _catacumba_ up and running.
+The best approach to start to understand how to process a video with _CamToNES_
+is using the _motion_wizard_ command.
 
+[source,bash]
+----
+camtones motion_wizard my_video_file.avi
+----
+
+You will see something like this:
+
+.Motion Wizard
+image::assets/motion-wizard.png[Motion Wizard]
+
+The motion wizard allow you to "tune" the parameters used to extract the motion
+sections from a video file.
+
+=== Tunning
+
+You can see the link:#tunning-parameters[Tunning Parameters] section to
+understand better the porpose and the behavior of each paramter.
+
+=== Running extraction
+
+After ensure that you have tunned it correctly, you
+can start to capture it in a new video file, or an .edl file.
+
+This will have the same behavior if you run the _motion_extract_ or
+_motion_extract_edl_ commands in the command line, with the parameters defined
+in the wizard.
+
+=== Reproducing extracted edl
+
+If you extract the video to an edl file, you can reproduce it with, for
+example, _mplayer_ with the next command:
+
+[source,bash]
+----
+mplayer -edl my_video_file.avi.edl my_video_file.avi
+----
+
+The edl file will say _mplayer_ when have to jump to next position with motion
+detected.
+
+[[motion-detection]]
 === Motion detection
 
-== Concepts
+[[motion-extraction]]
+=== Motion detection
 
+[[motion-extraction-edl]]
+=== Motion extraction edl
 
-== Developers Guide
+[[tunning-parameters, Tunning Parameters]]
+== Tunning parameters
+
+=== Motion detection/extraction
+
+The motion extraction/detection get the images of a video, and process it to
+detect changes between one frame and the previous. This approach, normally,
+generate a lot of false positives because we are searching for big solid
+objects in the camera, not small leafs moved by the wind.
+
+For remove this false positive _CamToNES_ process the diferences image to
+remove this false positive.  But the false positive can means diferent things
+for different videos, this is the reason to need tunning the extraction.
+
+==== The Process
+
+To filter the image, _CamToNES_ follow the next process. Get a frame from the
+video, resize it (if the user have define a link:#motion-resize[resize]
+parameter), process it through a background extraction
+link:#motion-algorithms[algorithm] (MOG2 or KNN). As result, we get a mask of
+diferences between the background and the current frame.
+
+After get the differences mask, we apply to this mask the
+link:#motion-blur[blur] defined by the user.
+
+After bluring the mask, we discard all grays, using the _threshold_ provided by
+the user, this means, that every gray darker than the threshold will be black,
+and every gray lighter than the threshold will be white.
+
+Every white element remaining in the mask after this process will generate a
+_rectangle_ result.
+
+This rectangles are filtered by the _exclude_ parameter.
+
+If a frame have a not-excluded rectangle, the frame is a motion frame, else, is
+a static frame.
+
+[[motion-resize]]
+==== Resize
+
+You can resize the image before processing with the _--resize_ option. This is
+done for process the result faster or for discard some video imperfections.
+
+The value must be a number of pixels of the new width of the frames.
+
+[[motion-algorithms]]
+==== Algorithms
+
+You can defined with the _--subtractor_ parameter the algorithm to use, normally
+MOG2 and KNN, but depends on your installation. You can see all supported
+algorithms running _motion_detect_, _motion_extract_ or _motion_extract_edl_
+with the _--help_ option.
+
+The value must be one of the allowed options (normally MOG2 or KNN).
+
+[[motion-blur]]
+==== Blur
+
+You can blur the mask to remove camera imperfections or irrelevant small
+movments with the _--blur_ option.
+
+The value must be a number of pixels.
+
+[[motion-threshold]]
+==== Threshold
+
+You discard gray zones in the mask with the _--threshold_ option (this normally
+combined with the blur allow to remove imperfections or small movementes). The
+KNN and MOG2 algorithms detect shadows and assign the gray with value 127 to
+the shadows.
+
+The value must be a number between 0 and 255.
+
+[[motion-exclude]]
+==== Exclude
+
+You can exclude result rectangles with the _--exclude_ option. This option
+recive a python expresion that is evaluated to True or False. If the expression
+evaluate to True, the rectangle is discarded.
+
+The value must be a valid python expresion, and you will have access to the
+variables _rect_ and _frame_.
+
+The _rect_ variable will have the attributes x, y, width, height and area.
+
+The _frame_ variable will have the attributes width, height and area.
+
+You can use it, for example, to discard any movement with an area smallar than
+10000 pixels with the next expression:
+
+[source,python]
+----
+rect.area < 10000
+----
+
+=== Face detection/extraction
+
+== Contributing
 
 === Philosophy
 
