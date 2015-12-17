@@ -17,21 +17,21 @@ security camera videos for process motion and faces.
 
 === Rationale
 
-I start writting this program because I need to review hours of security camera
+I start writing this program because I need to review hours of security camera
 videos and that's sounds really boring and time consuming. The main objetive is
 to easy the task of reviewing static camera videos applying motion detection
-through Background substracion
+through Background subtraction.
 
 Here a incomplete list of things that _CamToNES_ aims to archieve:
 
 * Have a simple interface to use OpenCV in for extract motion and faces from videos.
 * Provide a simple way to tune the parameters for correctly detect relevant motion.
-* Provide a simple way to realtime detection of movement and faces.
+* Provide a simple way to real-time detection of movement and faces.
 
 And _CamToNES_ goals are not:
 
 * To be a fully feature interface to OpenCV.
-* To provide an exaustive set of tune parameters.
+* To provide an exhaustive set of tune parameters.
 
 === Project Maturity
 
@@ -73,7 +73,7 @@ sections from a video file.
 === Tunning
 
 You can see the link:#tunning-motion-parameters[Motion Detection/Extraction Parameters] section to
-understand better the porpose and the behavior of each paramter.
+understand better the purpose and the behavior of each parameter.
 
 === Running extraction
 
@@ -100,7 +100,7 @@ For example, you can view motion detected by your webcam with the next command:
 camtones motion_detect 0
 ----
 
-or the same with a video with
+or the same with a video with:
 
 [source,bash]
 ----
@@ -211,8 +211,8 @@ detect changes between one frame and the previous. This approach, normally,
 generate a lot of false positives because we are searching for big solid
 objects in the camera, not small leafs moved by the wind.
 
-For remove this false positive _CamToNES_ process the diferences image to
-remove this false positive.  But the false positive can means diferent things
+For remove this false positive _CamToNES_ process the differences image to
+remove this false positive.  But the false positive can means different things
 for different videos, this is the reason to need tunning the extraction.
 
 ==== The Process
@@ -221,12 +221,12 @@ To filter the image, _CamToNES_ follow the next process. Get a frame from the
 video, resize it (if the user have define a link:#motion-resize[resize]
 parameter), process it through a background extraction
 link:#motion-algorithms[algorithm] (MOG2 or KNN). As result, we get a mask of
-diferences between the background and the current frame.
+differences between the background and the current frame.
 
 After get the differences mask, we apply to this mask the
 link:#motion-blur[blur] defined by the user.
 
-After bluring the mask, we discard all grays, using the _threshold_ provided by
+After blur the mask, we discard all grays, using the _threshold_ provided by
 the user, this means, that every gray darker than the threshold will be black,
 and every gray lighter than the threshold will be white.
 
@@ -260,7 +260,7 @@ The value must be one of the allowed options (normally MOG2 or KNN).
 ==== Blur
 
 You can blur the mask to remove camera imperfections or irrelevant small
-movments with the _--blur_ option.
+movements with the _--blur_ option.
 
 The value must be a number of pixels.
 
@@ -268,7 +268,7 @@ The value must be a number of pixels.
 ==== Threshold
 
 You discard gray zones in the mask with the _--threshold_ option (this normally
-combined with the blur allow to remove imperfections or small movementes). The
+combined with the blur allow to remove imperfections or small movements). The
 KNN and MOG2 algorithms detect shadows and assign the gray with value 127 to
 the shadows.
 
@@ -278,17 +278,17 @@ The value must be a number between 0 and 255.
 ==== Exclude
 
 You can exclude result rectangles with the _--exclude_ option. This option
-recive a python expresion that is evaluated to True or False. If the expression
+receive a python expression that is evaluated to True or False. If the expression
 evaluate to True, the rectangle is discarded.
 
-The value must be a valid python expresion, and you will have access to the
+The value must be a valid python expression, and you will have access to the
 variables _rect_ and _frame_.
 
 The _rect_ variable will have the attributes x, y, width, height and area.
 
 The _frame_ variable will have the attributes width, height and area.
 
-You can use it, for example, to discard any movement with an area smallar than
+You can use it, for example, to discard any movement with an area smaller than
 10000 pixels with the next expression:
 
 [source,python]
