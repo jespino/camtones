@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "camtones",
-    version = "0.0.1",
+    version = "0.0.2",
     description = "Camera To Not-Empty Sequence is a motion and face extration system",
     author = "Jesús Espino",
     author_email = "jespinog@gmail.com",
@@ -21,6 +21,7 @@ setup(
         'imutils',
         'numpy',
         'click',
+        'progressbar2',
     ],
     license = "BSD",
     classifiers = [
