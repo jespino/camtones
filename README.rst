@@ -1,4 +1,4 @@
-CamToNes
+CamToNES
 ========
 
 CamToNes (Camera To Not Empty Sequece) is a small script to process security
