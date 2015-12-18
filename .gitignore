@@ -4,3 +4,5 @@ __pycache__
 *.avi
 doc/dist
 *~
+*.egg-info
+dist

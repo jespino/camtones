@@ -110,4 +110,4 @@ def face_extract(ctx, video_or_device, output_directory, classifier, progress):
 
 
 if __name__ == '__main__':
-    cli(obj={})
+    cli(prog_name="camtones", obj={})
