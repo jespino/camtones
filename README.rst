@@ -10,17 +10,8 @@ Documentation
 You can find the full documentation of the project
 `here <http://jespino.github.io/camtones/latest/>`_.
 
-Screenshots
------------
+Example results
+---------------
 
-.. figure:: https://jespino.github.io/camtones/latest/assets/motion-detection.gif
-   :scale: 50 %
-   :alt: Motion detection
-
-   Motion detection
-
-.. figure:: https://jespino.github.io/camtones/latest/assets/face-detection.gif
-   :scale: 50 %
-   :alt: Face detection
-
-   Face detection
+You can see some example results
+`here <http://jespino.github.io/camtones/latest/index.html#example-detections>`_.

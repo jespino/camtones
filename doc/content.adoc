@@ -33,6 +33,15 @@ And _CamToNES_ goals are not:
 * To be a fully feature interface to OpenCV.
 * To provide an exhaustive set of tune parameters.
 
+[[example-detections]]
+=== Example detections
+
+.Motion Detection
+image::assets/motion-detection.gif[Motion Detection]
+
+.Face Extraction
+image::assets/face-detection.gif[Face Extraction]
+
 === Project Maturity
 
 Since _CamToNES_ is a young project there can be some API breakage.
