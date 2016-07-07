@@ -207,8 +207,8 @@ class FrameProcessor:
         else:
             color_frame = frame.bgr_to_rgb_copy()
 
-        data = color_frame.to_string()
-        return GdkPixbuf.Pixbuf.new_from_data(data, GdkPixbuf.Colorspace.RGB, False, 8, frame.width, frame.height, frame.width*3, None, None)
+        self.frame_data = color_frame.to_string()
+        return GdkPixbuf.Pixbuf.new_from_data(self.frame_data, GdkPixbuf.Colorspace.RGB, False, 8, frame.width, frame.height, frame.width*3, None, None)
 
 
 
